@@ -18,15 +18,20 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @Log4j2
 class ServerServiceTest {
-
     private ServerService service;
     private String id;
     private Server server;
+    OrganizationService orgService;
+    Organization organization;
 
     @BeforeEach
     void setUp() throws Exception {
         service = new ServerService(Config.getPritunlTestServerURL(),
                 Config.getPritunlTestServerLogin(), Config.getPritunlTestServerPassword());
+        orgService = new OrganizationService(Config.getPritunlTestServerURL(), service.getAuthData());
+
+        organization = orgService.create(Organization.builder().name("Test").build());
+
         server = Server.builder()
                 .name("Test")
                 .network("192.168.4.0/24")
@@ -68,6 +73,7 @@ class ServerServiceTest {
     void tearDown() throws InterruptedException {
         Thread.sleep(3000);
         service.delete(id);
+        orgService.delete(organization.getId());
     }
 
     @Test
@@ -113,11 +119,6 @@ class ServerServiceTest {
 
     @Test
     void stopServer() throws Exception {
-        OrganizationService orgService = new OrganizationService(Config.getPritunlTestServerURL(),
-                Config.getPritunlTestServerLogin(), Config.getPritunlTestServerPassword());
-
-        Organization organization = orgService.create(Organization.builder().name("Test").build());
-
         service.attachOrganization(server.getId(), organization.getId());
 
         server = service.get(server.getId()).get();
@@ -134,11 +135,6 @@ class ServerServiceTest {
 
     @Test
     void startServer() throws Exception {
-        OrganizationService orgService = new OrganizationService(Config.getPritunlTestServerURL(),
-                Config.getPritunlTestServerLogin(), Config.getPritunlTestServerPassword());
-
-        Organization organization = orgService.create(Organization.builder().name("Test").build());
-
         service.attachOrganization(server.getId(), organization.getId());
 
         server = service.get(server.getId()).get();
@@ -151,11 +147,6 @@ class ServerServiceTest {
 
     @Test
     void restartServer() throws Exception {
-        OrganizationService orgService = new OrganizationService(Config.getPritunlTestServerURL(),
-                Config.getPritunlTestServerLogin(), Config.getPritunlTestServerPassword());
-
-        Organization organization = orgService.create(Organization.builder().name("Test").build());
-
         service.attachOrganization(server.getId(), organization.getId());
 
         server = service.get(server.getId()).get();
@@ -172,13 +163,7 @@ class ServerServiceTest {
 
     @Test
     void attachOrganization() throws Exception {
-        OrganizationService orgService = new OrganizationService(Config.getPritunlTestServerURL(),
-                Config.getPritunlTestServerLogin(), Config.getPritunlTestServerPassword());
-
-        Organization organization = orgService.create(Organization.builder().name("Test").build());
-
         service.attachOrganization(server.getId(), organization.getId());
-
         server = service.get(server.getId()).get();
     }
 }

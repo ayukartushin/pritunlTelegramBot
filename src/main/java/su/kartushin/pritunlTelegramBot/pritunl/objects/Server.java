@@ -1,5 +1,7 @@
 package su.kartushin.pritunlTelegramBot.pritunl.objects;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -15,6 +17,7 @@ import java.util.List;
 @JsonSerialize
 @JsonDeserialize
 @EqualsAndHashCode(callSuper = false)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Server extends haveId {
 
     @JsonProperty("id")

@@ -202,7 +202,12 @@ public abstract class BaseService<T extends haveId> {
         if (response.body() != null) {
             json = response.body().string();
         }
-        var result = parseJson(json);
+        T result = null;
+        assert json != null;
+        if (json.startsWith("[{"))
+            result = parseJsonArray(json).getFirst();
+        else
+            result = parseJson(json);
 
         return result;
     }
